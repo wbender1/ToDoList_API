@@ -66,6 +66,12 @@ app.get('/todos', (req, res) => {
         });
     }
 
+    if (completed === undefined) {
+        return res.json({
+            filteredTodos
+        });
+    }
+
     // Response is given with the filtered or full list.
     res.json({
         message: `Tasks with the completion status of '${completed}' are shown below: `,
