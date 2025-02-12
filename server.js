@@ -42,7 +42,7 @@ app.get('/todos', (req, res) => {
     if (todos.length === 0) {
 
         // An error message is added to response and returned.
-        return res.status(200).json({ message: 'No to-do items found' });
+        return res.status(200).json({ message: 'No to-do items found, check request!' });
     }
 
     // Sets the full list of todos to be named filteredTodos.
@@ -61,11 +61,16 @@ app.get('/todos', (req, res) => {
     if (filteredTodos.length === 0) {
 
         // An error message is added to response and returned.
-        return res.status(200).json({ message: 'No tasks match your completion status' });
+        return res.json({
+            message: `No tasks match your completion status: '${completed}'`
+        });
     }
 
     // Response is given with the filtered or full list.
-    res.json(filteredTodos);
+    res.json({
+        message: `Tasks with the completion status of '${completed}' are shown below: `,
+        filteredTodos
+    });
 });
 
 
@@ -91,13 +96,14 @@ app.get('/todos/:id', (req, res) => {
     if (!todo) {
 
         // An error message is added to response and returned.
-        return res.status(404).json({ message: 'To-do item not found' });
+        return res.status(404).json({
+            message: `To-do item with ID: ${id} is not found`
+        });
     }
 
     // Response is given with the filtered or full list.
     res.json({
-        message: 'Task found successfully!',
-        task: todo
+        message: `Task: ${todo.task} with ID: ${todo.id} and completion status '${todo.completed}' found successfully!`,
     });
 });
 
@@ -135,7 +141,9 @@ app.post('/todos', (req, res) => {
     todos.push(newTodo);
 
     // Response is given with the new task that was added. 
-    res.status(201).json(newTodo);
+    res.json({
+        message: `Task: ${newTodo.task} added successfully! ID: ${newTodo.id}, Status: 'false'`,
+    });
 });
 
 
@@ -158,7 +166,9 @@ app.put('/todos/:id', (req, res) => {
     if (!todo) {
 
         // An error message is added to response and returned.
-        return res.status(404).json({ message: 'To-do item not found' });
+        return res.status(404).json({
+            message: `To-do item with ID: ${id} is not found`
+        });
     }
 
     // An if statement which assigns the updated task string from the request to the task found when searching by id.
@@ -169,8 +179,7 @@ app.put('/todos/:id', (req, res) => {
 
     // Response is given to confirm the task has been updated.
     res.json({
-        message: 'Task updated successfully!',
-        task: todo
+        message: `Task: ${todo.task} updated successfully! ID: ${todo.id}, Status: '${todo.completed}'`,
     });
 });
 
@@ -197,10 +206,10 @@ app.delete('/todos/:id', (req, res) => {
 
     // Response is given with the deleted tasks as an array.
     res.json({
-        message: 'To-do item deleted successfully',
-        deletedTodo
+        message: `Task: ${deletedTodo[0].task} with ID: ${deletedTodo[0].id} and Status: '${deletedTodo[0].completed}', deleted successfully!`,
     });
 });
+
 
 /*
 app.delete('/todos', (req, res) => {
