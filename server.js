@@ -91,7 +91,7 @@ app.get('/todos/:id', (req, res) => {
     if (todos.length === 0) {
 
         // An error message is added to response and returned.
-        return res.status(404).json({ message: 'No to-do items found' });
+        return res.status(404).json({ message: 'No to-do item found, check ID request!' });
     }
 
     // Iterates through every task in todo while checking to see if todo.id matches the id being passed from the request.
@@ -203,7 +203,7 @@ app.delete('/todos/:id', (req, res) => {
 
     // An error handling if statement which checks to see if the index number is valid (greater than 0);
     if (todoIndex === -1) {
-        return res.status(404).json({ message: 'To-do item not found' }); // An error message is added to response and returned.
+        return res.status(404).json({ message: `To-do item with ID: ${id} not found` }); // An error message is added to response and returned.
     }
 
     // Using the previous found index, splice removes 1 item starting at that index value from the todos array.
