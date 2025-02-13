@@ -203,7 +203,8 @@ app.delete('/todos/:id', (req, res) => {
 
     // An error handling if statement which checks to see if the index number is valid (greater than 0);
     if (todoIndex === -1) {
-        return res.status(404).json({ message: `To-do item with ID: ${id} not found` }); // An error message is added to response and returned.
+        // An error message is added to response and returned.
+        return res.status(404).json({ message: `To-do item with ID: ${id} not found` });
     }
 
     // Using the previous found index, splice removes 1 item starting at that index value from the todos array.
@@ -217,26 +218,59 @@ app.delete('/todos/:id', (req, res) => {
 });
 
 
-/*
+// Define the DELETE method which searches for a task based on multipe ids and then deletes the tasks from the list
+// Adds an additionally endpoint which is the id assigned to the task.
 app.delete('/todos', (req, res) => {
+
+    // Extracts the id parameter from the body of the request.
     const { ids } = req.body;
+
+    // An error handling if statement which checks to see if the input is an array of ids.
     if (!Array.isArray(ids) || ids.length === 0) {
-        return res.status(400).json({ message: 'Invalid input. Provide an array of IDs to delete.' });
+
+        // An error message is added to response and returned.
+        return res.status(400).json({
+            message: 'Invalid input. Provide an array of IDs to delete.'
+        });
     }
+
+    // Creates an empty array to store the deleted tasks.
     const deletedTodos = [];
+
+    // Iterates over every id in ids. Essentially a for loop that runs for every id value given in the request.
     ids.forEach(id => {
+
+        // Iterates through every task in todo while checking to see if todo.id matches the is being passed from the URL.
+        // It then assigns todoIndex with the index value of that task. Assigns -1 to index if the index value is not found.
         const todoIndex = todos.findIndex((todo) => todo.id === parseInt(id));
+
+        // An if statement that runs as long as the index value is found in the array, or not equal to -1.
         if (todoIndex !== -1) {
+
+            // Using the previous found index, splice removes 1 item starting at that index value from the todos array.
+            // The removed item is assigned as an array to deletedTodo.
             const deletedTodo = todos.splice(todoIndex, 1);
+
+            // Adds the deleted task to the deleted task array.
             deletedTodos.push(deletedTodo[0]);
         }
     });
+
+    // An error handling if statement that checks to see if the deleted tasks array has any tasks.
     if (deletedTodos.length === 0) {
-        return res.status(404).json({ message: 'No to-do items found for the provided IDs.' });
+
+        // An error message is added to response and returned.
+        return res.status(404).json({
+            message: `No to-do items found for the provided IDs: ${ids}.`
+        });
     }
-    res.json({ message: 'To-do items deleted successfully', deletedTodos });
+
+    // Response is given with the deleted tasks array.
+    res.json({
+        message: `To-do items: ${deletedTodos.map(todo => `'${todo.task}, id: ${todo.id}, status: ${todo.completed}'`).join(', ')} deleted successfully`
+    });
 });
-*/
+
 
 
 // Defines the port on which the server will run.
